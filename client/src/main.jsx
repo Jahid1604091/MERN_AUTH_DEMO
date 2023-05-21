@@ -15,6 +15,7 @@ import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 import Profile from "./pages/Profile.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
+import UpdateProfile from "./pages/UpdateProfile.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,6 +25,7 @@ const router = createBrowserRouter(
       <Route index path="/register" element={<Register />} />
       <Route path="" element={<PrivateRoute />}>
         <Route index path="/profile" element={<Profile />} />
+        <Route index path="/profile/edit" element={<UpdateProfile />} />
       </Route>
     </Route>
   )

@@ -1,5 +1,5 @@
 import { apiSlice } from "./apiSlice";
-const URL = 'api/users';
+const URL = '/api/users';
 
 export const userApiSlice = apiSlice.injectEndpoints({
     endpoints:(builder)=>({
@@ -19,6 +19,14 @@ export const userApiSlice = apiSlice.injectEndpoints({
             })
         }),
 
+        updateProfile:builder.mutation({
+            query:(data)=>({
+                url:`${URL}/profile`,
+                method:'PUT',
+                body:data
+            })
+        }),
+
         logout:builder.mutation({
             query:()=>({
                 url:`${URL}/logout`,
@@ -29,4 +37,4 @@ export const userApiSlice = apiSlice.injectEndpoints({
     })
 });
 
-export const {useLoginMutation, useRegisterMutation,useLogoutMutation} = userApiSlice;
+export const {useLoginMutation, useRegisterMutation,useUpdateProfileMutation,useLogoutMutation} = userApiSlice;
