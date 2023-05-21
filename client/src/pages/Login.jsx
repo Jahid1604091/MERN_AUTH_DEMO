@@ -2,7 +2,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormContainer from '../components/FormContainer';
 import { useEffect, useState } from 'react';
-import { Row,Col } from 'react-bootstrap';
+import { Row,Col, Spinner } from 'react-bootstrap';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useLoginMutation } from '../slices/userApiSlice';
@@ -58,10 +58,22 @@ function Login() {
         />
       </Form.Group>
 
-
-      <Button variant="primary" type="submit">
-        Submit
-      </Button>
+    {
+        isLoading ? <Button variant="primary" disabled>
+        <Spinner
+          as="span"
+          animation="grow"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+        />
+        Loading...
+      </Button> :
+       <Button variant="primary" type="submit">
+       Submit
+     </Button>
+    }
+     
     </Form>
 
     <Row>

@@ -1,19 +1,41 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import FormContainer from "../components/FormContainer";
-import { useState } from "react";
-import { Row, Col } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Row, Col, Spinner } from "react-bootstrap";
+import { Link, useNavigate } from "react-router-dom";
+import { useRegisterMutation } from "../slices/userApiSlice";
+import { setCredentials } from "../slices/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 function Register() {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const handleSubmit = (e) => {
+  const {userInfo} = useSelector(state=>state.auth);
+ 
+
+  useEffect(()=>{
+      if(userInfo){
+          navigate('/');
+      }
+  },[userInfo,navigate]);
+  const [register,{isLoading}] = useRegisterMutation();
+
+  const handleSubmit = async(e) =>{
     e.preventDefault();
-    console.log(email, password);
-  };
+    try {
+        const res = await register({email,password,name}).unwrap();
+        dispatch(setCredentials({...res.data}));
+        navigate('/');
+        
+    } catch (error) {
+        console.log(error?.data?.message || error.error);
+    }
+}
   return (
     <FormContainer>
       <Form onSubmit={handleSubmit}>
@@ -47,9 +69,21 @@ function Register() {
           />
         </Form.Group>
 
-        <Button variant="primary" type="submit">
-          Submit
-        </Button>
+        {
+        isLoading ? <Button variant="primary" disabled>
+        <Spinner
+          as="span"
+          animation="grow"
+          size="sm"
+          role="status"
+          aria-hidden="true"
+        />
+        Loading...
+      </Button> :
+       <Button variant="primary" type="submit">
+       Submit
+     </Button>
+    }
       </Form>
 
       <Row>
