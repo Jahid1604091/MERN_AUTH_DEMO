@@ -2,8 +2,27 @@ import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
 import NavDropdown from 'react-bootstrap/NavDropdown';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLogoutMutation } from '../slices/userApiSlice';
+import { logout } from '../slices/authSlice';
+import { useNavigate } from 'react-router-dom';
 
 function Header() {
+  const {userInfo} = useSelector(state=>state.auth);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const [logoutApi] = useLogoutMutation();
+
+  const logoutHandler = async()=>{
+    try {
+      await logoutApi().unwrap();
+      dispatch(logout());
+      navigate('/login');
+    } catch (error) {
+      console.log(error.message)
+    }
+  }
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -25,12 +44,20 @@ function Header() {
               </NavDropdown.Item>
             </NavDropdown>
           </Nav>
+
           <Nav>
-            <Nav.Link href="#deets">Sign In</Nav.Link>
-            <Nav.Link eventKey={2} href="#memes">
+            {
+              userInfo ? <Nav.Link onClick={logoutHandler}>Logout</Nav.Link> : 
+              <>
+            <Nav.Link href="/login">Sign In</Nav.Link>
+            <Nav.Link eventKey={2} href="/register">
               Sign Up
             </Nav.Link>
+              
+              </>
+            }
           </Nav>
+          
         </Navbar.Collapse>
       </Container>
     </Navbar>

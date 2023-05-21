@@ -1,18 +1,40 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import FormContainer from '../components/FormContainer';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Row,Col } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { useLoginMutation } from '../slices/userApiSlice';
+import { setCredentials } from '../slices/authSlice';
 
 function Login() {
 
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
 
-    const handleSubmit = (e) =>{
+    const [login, {isLoading}] = useLoginMutation();
+    const {userInfo} = useSelector(state=>state.auth);
+   
+
+    useEffect(()=>{
+        if(userInfo){
+            navigate('/')
+        }
+    },[userInfo,navigate]);
+
+    const handleSubmit = async(e) =>{
         e.preventDefault();
-        console.log(email,password);
+        try {
+            const res = await login({email,password}).unwrap();
+            dispatch(setCredentials({...res.data}));
+            navigate('/');
+            
+        } catch (error) {
+            console.log(error?.data?.message || error.error);
+        }
     }
   return (
     <FormContainer>
