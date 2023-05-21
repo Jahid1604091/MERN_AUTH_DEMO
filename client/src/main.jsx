@@ -8,11 +8,13 @@ import {
   createBrowserRouter,
   createRoutesFromElements,
 } from "react-router-dom";
+import { Provider } from "react-redux";
+import { store } from "./store.js";
 import Home from "./pages/Home.jsx";
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
-import { Provider } from "react-redux";
-import { store } from "./store.js";
+import Profile from "./pages/Profile.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +22,9 @@ const router = createBrowserRouter(
       <Route index path="/" element={<Home />} />
       <Route index path="/login" element={<Login />} />
       <Route index path="/register" element={<Register />} />
+      <Route path="" element={<PrivateRoute />}>
+        <Route index path="/profile" element={<Profile />} />
+      </Route>
     </Route>
   )
 );
