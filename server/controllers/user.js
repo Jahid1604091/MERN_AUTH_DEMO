@@ -19,11 +19,18 @@ export const register = asyncHandler(async (req, res) => {
     }
     const user = await User.create(req.body);
     if (user) {
+        res.cookie('jwt', user.getSignedJwtToken(), {
+            httpOnly: true,
+            secure: process.env.NODE_ENV !== 'development',
+            sameSite: 'strict',
+            maxAge: 30 * 24 * 24 * 60 * 60
+        })
         return res.status(201).json({
             success: true,
             data: user,
             token: user.getSignedJwtToken()
         });
+
     }
     else {
         res.status(400);

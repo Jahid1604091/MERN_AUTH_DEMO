@@ -32,36 +32,39 @@ const userSchema = mongoose.Schema({
     resetPasswordExpire: Date,
     emailVerificationToken: String,
     emailTokenExpire: Date,
-    verified:Boolean,
+    verified: Boolean,
 
-},{timestamps:true})
+}, { timestamps: true })
 
 //encrypt pass
 userSchema.pre('save', async function (next) {
-    
+
     //only run when changed
-    if(!this.isModified('password')){
+    if (!this.isModified('password')) {
         next();
     }
     //else encrypt
- 
+
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
 
 })
 
 //compare password
-userSchema.methods.matchPassword = async function(plainPass){
-    return await bcrypt.compare(plainPass,this.password)
+userSchema.methods.matchPassword = async function (plainPass) {
+    return await bcrypt.compare(plainPass, this.password)
 }
 
 //sign JWT
 userSchema.methods.getSignedJwtToken = function () {
+    //returning token
     return jwt.sign({ id: this._id },
         process.env.JWT_SECRET,
         { expiresIn: process.env.JWT_EXPIRED_IN });
+
+
 }
 
 
-export const User = mongoose.model('User',userSchema);
+export const User = mongoose.model('User', userSchema);
 
