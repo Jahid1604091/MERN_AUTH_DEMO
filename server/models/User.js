@@ -26,7 +26,6 @@ const userSchema = mongoose.Schema({
         type: String,
         required: [true, 'Please add a password'],
         minlength: 6,
-        select: false
     },
     resetPasswordToken: String,
     resetPasswordExpire: Date,
@@ -51,8 +50,8 @@ userSchema.pre('save', async function (next) {
 })
 
 //compare password
-userSchema.methods.matchPassword = async function (plainPass) {
-    return await bcrypt.compare(plainPass, this.password)
+userSchema.methods.matchPassword = async function (enteredPass) {
+    return await bcrypt.compare(enteredPass, this.password)
 }
 
 //sign JWT
