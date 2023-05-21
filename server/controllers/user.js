@@ -68,10 +68,25 @@ export const register = asyncHandler(async (req, res) => {
 
 //private -> api/users/profile/
 export const get_profile = asyncHandler(async (req, res) => {
-    res.json("My Profile")
+    
+    res.status(200).json(req.user)
 });
 
 //private -> api/users/profile/
 export const update_profile = asyncHandler(async (req, res) => {
-    res.json("Update My Profile")
+    const user = await User.findById(req.user);
+    if (!user) {
+        throw new Error('User not found', 404);
+    }
+    if (!req.body.password) {
+        throw new Error('Please provide your password ', 404);
+    }
+    user.name = req.body.name || user.name
+    user.email = req.body.email || user.email
+    user.password = req.body.password
+    const updatedUser = await user.save();
+    return res.status(200).json({
+        success: true,
+        data: updatedUser
+    });
 });
