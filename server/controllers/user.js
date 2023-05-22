@@ -4,9 +4,9 @@ import { User } from "../models/user.js";
 //public -> api/users/auth
 export const auth_user = asyncHandler(async (req, res) => {
 
-    const {email,password} = req.body;
-    const user = await User.findOne({email});
-    
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
+
 
     if (user && (await user.matchPassword(password))) {
         //set cookie
@@ -30,12 +30,12 @@ export const auth_user = asyncHandler(async (req, res) => {
 });
 
 //private -> api/users/logout
-export const logout = asyncHandler(async(req,res)=>{
-    res.cookie('jwt','',{
-        httpOnly:true,
-        expires:new Date(0)
+export const logout = asyncHandler(async (req, res) => {
+    res.cookie('jwt', '', {
+        httpOnly: true,
+        expires: new Date(0)
     })
-    res.status(200).json({message:"User Logged Out!"});
+    res.status(200).json({ message: "User Logged Out!" });
 });
 
 //public -> api/users
@@ -68,7 +68,7 @@ export const register = asyncHandler(async (req, res) => {
 
 //private -> api/users/profile/
 export const get_profile = asyncHandler(async (req, res) => {
-    
+
     res.status(200).json(req.user)
 });
 
@@ -89,4 +89,27 @@ export const update_profile = asyncHandler(async (req, res) => {
         success: true,
         data: updatedUser
     });
+});
+
+//private -> api/users/profile/
+export const delete_profile = asyncHandler(async (req, res) => {
+
+    const user = await User.findById(req.user);
+
+    if (!user) {
+        throw new Error('User not found', 404);
+
+    }
+    else {
+
+        const deletedUser = await User.findByIdAndRemove(req.user);
+        return res.status(200).json({
+            success: true,
+            data: deletedUser.name + ' is removed!'
+        });
+    }
+
+
+
+
 });
