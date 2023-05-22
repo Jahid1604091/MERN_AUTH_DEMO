@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useLogoutMutation } from '../slices/userApiSlice';
 import { logout } from '../slices/authSlice';
 import { Link, useNavigate } from 'react-router-dom';
+import styled from 'styled-components';
 
 function Header() {
   const {userInfo} = useSelector(state=>state.auth);
@@ -24,14 +25,15 @@ function Header() {
     }
   }
   return (
+    <Wrapper>
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
         <Navbar.Brand href="/">Sample Auth </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="/about">About </Nav.Link>
-            <Nav.Link href="/pricing">Pricing</Nav.Link>
+          <Link to='/about'>About</Link>
+      
 
           </Nav>
 
@@ -48,11 +50,7 @@ function Header() {
               </NavDropdown.Item>
             </NavDropdown> : 
               <>
-            <Nav.Link href="/login">Sign In</Nav.Link>
-            <Nav.Link eventKey={2} href="/register">
-              Sign Up
-            </Nav.Link>
-              
+   
               </>
             }
           </Nav>
@@ -60,7 +58,16 @@ function Header() {
         </Navbar.Collapse>
       </Container>
     </Navbar>
+    </Wrapper>
   );
 }
+
+const Wrapper = styled.section`
+    a{
+        color:#fff;
+        
+    }
+
+`
 
 export default Header;
